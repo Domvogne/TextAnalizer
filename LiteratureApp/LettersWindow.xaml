@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LiteratureApp"
         mc:Ignorable="d"
-        Title="Статистика по буквам" Height="450" Width="600">
+        Title="Статистика по буквам" Height="450" Width="700">
     <Grid>
         <ListBox x:Name="StatsLB" Margin="5" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
-                        <StackPanel Orientation="Horizontal" Width="250">
+                        <StackPanel Orientation="Horizontal" Width="300">
                             <TextBlock>№</TextBlock>
                             <TextBlock Text="{Binding Raiting}"/>
                             <TextBlock Margin="5, 0">Буква</TextBlock>
@@ -19,6 +19,8 @@
                             <TextBlock Margin="5, 0">встречается</TextBlock>
                             <TextBlock Text="{Binding Count}"/>
                             <TextBlock Margin="5, 0">раз</TextBlock>
+                            <TextBlock Text="{Binding Parts}"/>
+
                         </StackPanel>
 
                         <ProgressBar Width="300" Maximum="{Binding Total}" Value="{Binding Count}"/>

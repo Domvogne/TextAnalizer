@@ -4,17 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LiteratureApp
 {
@@ -59,11 +49,14 @@ namespace LiteratureApp
                 var repl = sorted[i];
                 if (string.IsNullOrEmpty(repl.From))
                     continue;
+                workText = workText.Replace(repl.From.ToLower(), ('\u0003').ToString());
                 workText = workText.Replace(repl.From, ('\u0003').ToString());
                 repl.N = workText.Count(i => i == '\u0003');
                 repl.OnPropertyChanged("N");
                 workText = workText.Replace(('\u0003').ToString(), repl.To);
             }
+            var remSum = sorted.Sum(i => i.N);
+            sorted.ForEach(i  => i.UpdatePersent(remSum));
             TextTB.Text = workText;
         }
         void UpdateList()
@@ -81,23 +74,38 @@ namespace LiteratureApp
         public List<LetterStatictics> GetStatistics()
         {
             List<LetterStatictics> ls = new List<LetterStatictics>();
-            var workText = TextTB.Text;
-            var total = workText.Length;
+            var workText = OriginalText.Replace(" ", "");
+            workText = workText.Replace('\n', ' ');
             while (workText.Length > 0)
             {
                 var next = workText[0];
-                var stat = new LetterStatictics(next) { Total = total };
+                var stat = new LetterStatictics(next);
                 var startLen = workText.Length;
-                workText = workText.Replace(next.ToString(), "");
+                if (stat.HasUL)
+                {
+                    workText = workText.Replace(next.ToString().ToLower(), "");
+                    stat.Lower = startLen - workText.Length;
+                    workText = workText.Replace(next.ToString().ToUpper(), "");
+                    stat.Count = startLen - workText.Length;
+                    stat.Upper = stat.Count - stat.Lower;
+                }
+                else
+                {
+                    workText = workText.Replace(next.ToString(), "");
+                    stat.Lower = startLen - workText.Length;
+                }
+
                 stat.Count = startLen - workText.Length;
                 ls.Add(stat);
             }
             ls = ls.OrderBy(x => x.Count).Reverse().ToList();
+            var max = ls.MaxBy(x => x.Count).Count;
             for (int i = 0; i < ls.Count; i++)
             {
                 ls[i].Raiting = i + 1;
+                ls[i].Total = max;
             }
-
+            
             return ls;
         }
     }
@@ -107,11 +115,18 @@ namespace LiteratureApp
         public string From { get; set; }
         public string To { get; set; }
         public int N { get; set; }
+        public double Persentage { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+        public void UpdatePersent(int total)
+        {
+            Persentage = Math.Round((double)N / (double)total * 109);
+            OnPropertyChanged("Persentage");
+
         }
     }
     public class LetterStatictics
@@ -124,5 +139,9 @@ namespace LiteratureApp
         {
             Letter = letter;
         }
+        public int Upper { get; set; }
+        public int Lower { get; set; }
+        public bool HasUL => char.IsLetter(Letter);
+        public string Parts => HasUL ? $"({Letter.ToString().ToLower()} {Lower}/{Letter.ToString().ToUpper()} {Upper})" : string.Empty;
     }
 }

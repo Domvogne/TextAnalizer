@@ -8,7 +8,7 @@
         Title="Текст" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="210"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <DockPanel>
@@ -30,6 +30,8 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="35"/>
+
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -38,9 +40,12 @@
                             <TextBlock Margin="3, 1">Замена с</TextBlock>
                             <TextBlock Margin="3, 1" Grid.Column="1">на</TextBlock>
                             <TextBlock Margin="3, 1" Grid.Column="2">N</TextBlock>
+                            <TextBlock Margin="3, 1" Grid.Column="3">%</TextBlock>
                             <TextBox Margin="3, 3" HorizontalAlignment="Stretch" Grid.Row="1" MaxLength="5" Text="{Binding From}"/>
                             <TextBox Margin="3, 3" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" MaxLength="5" Text="{Binding To}"/>
                             <TextBlock Margin="3, 3" Grid.Row="1" Grid.Column="2" Text="{Binding N}" />
+                            <TextBlock Margin="3, 3" Grid.Row="1" Grid.Column="3" Text="{Binding Persentage}" />
+
                         </Grid>
                     </DataTemplate>
                     
